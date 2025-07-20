@@ -17,7 +17,7 @@ serviceclass  variableser
 @GET Mapping ("/your's")
 
 public Iterable<bean class> getfunctioname(){
-	return variableser.getfundefine inservice
+	return variableser.getfundefine inservice 
 }
 
 @PostMapping
@@ -46,6 +46,26 @@ service
 
 @service
 class
-@Autowiredprivate reponam varrepo
+@Autowired
+private reponam varrepo
+
+
+public Iterable <Bean> getfun(){
+	return varrepo.findAll();
+}
+
+public Bean add(@RequestBody bean var1){
+	return varrepo.save(var1);
+}
+
+public ResponseEntity<Bean> update(@RequestBody Bean var2){
+
+	if(varrepo.existById(bean.getfunofbeam())){
+		retuen new ResponseEntity <Beam> (vareepo .save(bean),HttpStatus.OK);
+	}
+	else{
+		
+	}
+}
 
 
