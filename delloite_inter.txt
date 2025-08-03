@@ -1,0 +1,40 @@
+@GetMapping("fefrgrgrrgg/{$}")
+public getbyId( type m]enma)
+
+SELECT word ,cout(*) AS frequency 
+FROM words
+Group BY word
+ORDER BY frequecy DESC
+
+
+stream
+configuration
+java 8 
+basic code
+hasmap
+AWS
+
+Synchronise
+springboot environment classification 
+@Springboot -> inside it 3 config -> @springboot autoconfiguration ,@configuration ,@
+@Pathvaible
+@Requestparam
+@AutoWired
+@primary
+
+annotataion to remove default configuration
+
+write a hash map and print it
+write a code to find frequesncy of string using stream 
+write code in sql for the same
+
+Microservices A -> dependend on Microservices B 
+-> solution using message broker
+
+Hashset
+hashtable
+
+internal work of hashMap
+
+
+
