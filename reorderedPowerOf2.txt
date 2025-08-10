@@ -1,0 +1,21 @@
+class Solution {
+   
+     public boolean reorderedPowerOf2(int n) {
+        String target = countDigits(n);
+        
+        // Precompute all powers of 2 up to 10^9 (since int max is ~2.1 billion)
+        for (int i = 0; i < 31; i++) {
+            if (target.equals(countDigits(1 << i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Helper: Returns a sorted string representation of digit counts
+    private String countDigits(int n) {
+        char[] arr = String.valueOf(n).toCharArray();
+        Arrays.sort(arr);
+        return new String(arr);
+    }
+}
