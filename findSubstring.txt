@@ -1,0 +1,46 @@
+class Solution {
+    public List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> res = new ArrayList<>();
+        if (s.isEmpty() || words.length == 0) return res;
+
+        int wordLen = words[0].length();
+        int totalLen = wordLen * words.length;
+
+        // Frequency map of given words
+        Map<String, Integer> wordCount = new HashMap<>();
+        for (String w : words) wordCount.put(w, wordCount.getOrDefault(w, 0) + 1);
+
+        // Try every offset (wordLen possibilities)
+        for (int i = 0; i < wordLen; i++) {
+            int left = i, right = i, count = 0;
+            Map<String, Integer> seen = new HashMap<>();
+
+            while (right + wordLen <= s.length()) {
+                String w = s.substring(right, right + wordLen);
+                right += wordLen;
+
+                if (wordCount.containsKey(w)) {
+                    seen.put(w, seen.getOrDefault(w, 0) + 1);
+                    count++;
+
+                    // Too many of that word → shrink from left
+                    while (seen.get(w) > wordCount.get(w)) {
+                        String leftWord = s.substring(left, left + wordLen);
+                        seen.put(leftWord, seen.get(leftWord) - 1);
+                        count--;
+                        left += wordLen;
+                    }
+
+                    // If valid window found
+                    if (count == words.length) res.add(left);
+                } else {
+                    // Reset window
+                    seen.clear();
+                    count = 0;
+                    left = right;
+                }
+            }
+        }
+        return res;
+    }
+}
