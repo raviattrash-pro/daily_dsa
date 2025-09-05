@@ -1,0 +1,48 @@
+class Solution {
+    public void gameOfLife(int[][] board) {
+        int rows = board.length, cols = board[0].length;
+        int[][] copy = new int[rows][cols];
+
+        // Directions for neighbors
+        int[][] dirs = {
+            {-1, -1}, {-1, 0}, {-1, 1},
+            {0, -1},          {0, 1},
+            {1, -1}, {1, 0}, {1, 1}
+        };
+
+        // Copy original board
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                copy[r][c] = board[r][c];
+            }
+        }
+
+        // Apply rules using copy
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                int liveNeighbors = 0;
+
+                // count neighbors
+                for (int[] d : dirs) {
+                    int nr = r + d[0], nc = c + d[1];
+                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                        if (copy[nr][nc] == 1) {
+                            liveNeighbors++;
+                        }
+                    }
+                }
+
+                // Apply rules
+                if (copy[r][c] == 1) { // alive
+                    if (liveNeighbors < 2 || liveNeighbors > 3) {
+                        board[r][c] = 0; // dies
+                    }
+                } else { // dead
+                    if (liveNeighbors == 3) {
+                        board[r][c] = 1; // becomes alive
+                    }
+                }
+            }
+        }
+    }
+}
