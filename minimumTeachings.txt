@@ -1,0 +1,50 @@
+import java.util.*;
+
+class Solution {
+    public int minimumTeachings(int n, int[][] languages, int[][] friendships) {
+        int m = languages.length;
+        
+        // store each user's languages in a set for fast lookup
+        Set<Integer>[] knows = new HashSet[m + 1]; // 1-indexed
+        for (int i = 0; i < m; i++) {
+            knows[i + 1] = new HashSet<>();
+            for (int lang : languages[i]) {
+                knows[i + 1].add(lang);
+            }
+        }
+        
+        // Step 1: find problematic friendships
+        Set<Integer> problematicUsers = new HashSet<>();
+        for (int[] f : friendships) {
+            int u = f[0], v = f[1];
+            boolean canCommunicate = false;
+            for (int lang : knows[u]) {
+                if (knows[v].contains(lang)) {
+                    canCommunicate = true;
+                    break;
+                }
+            }
+            if (!canCommunicate) {
+                problematicUsers.add(u);
+                problematicUsers.add(v);
+            }
+        }
+        
+        // Step 2: if no problematic friendships -> 0
+        if (problematicUsers.isEmpty()) return 0;
+        
+        // Step 3: try teaching each language
+        int minTeach = Integer.MAX_VALUE;
+        for (int lang = 1; lang <= n; lang++) {
+            int alreadyKnow = 0;
+            for (int user : problematicUsers) {
+                if (knows[user].contains(lang)) {
+                    alreadyKnow++;
+                }
+            }
+            minTeach = Math.min(minTeach, problematicUsers.size() - alreadyKnow);
+        }
+        
+        return minTeach;
+    }
+}
