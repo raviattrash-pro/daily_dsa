@@ -1,0 +1,74 @@
+import java.util.Arrays;
+
+class Solution {
+    // Radix parameters
+    private static final int BITS = 8;          // bits per pass
+    private static final int R    = 1 << BITS;  // radix (256)
+    private static final int MASK = R - 1;      // 0xFF
+    private static final int W    = Long.BYTES; // 8 bytes per long
+
+    public int findMinArrowShots(int[][] points) {
+        int n = points.length;
+        if (n == 0) return 0;
+
+        // 1. Encode each interval into a long: [end(32)][start(32)]
+        long[] a = new long[n];
+        for (int i = 0; i < n; i++) {
+            int s = points[i][0], e = points[i][1];
+            long raw = ((long)e << 32) | (s & 0xFFFFFFFFL);
+            // 2. Flip the sign bit so that two's-complement ordering
+            //    matches unsigned bytewise ordering[15].
+            a[i] = raw ^ Long.MIN_VALUE;
+        }
+
+        // 3. LSD radix sort on the flipped values
+        long[] aux = new long[n];
+        int[] count = new int[R + 1];
+        for (int byteIdx = 0; byteIdx < W; byteIdx++) {
+            Arrays.fill(count, 0);
+            int shift = BITS * byteIdx;
+            for (long v : a) {
+                count[(int)((v >>> shift) & MASK) + 1]++;
+            }
+            for (int r = 0; r < R; r++) {
+                count[r + 1] += count[r];
+            }
+            for (long v : a) {
+                int b = (int)((v >>> shift) & MASK);
+                aux[count[b]++] = v;
+            }
+            System.arraycopy(aux, 0, a, 0, n);
+        }
+
+        // 4. Greedy sweep to count arrows, decoding intervals on the fly
+        int arrows = 1;
+        // Decode first interval’s end:
+        long firstRaw = a[0] ^ Long.MIN_VALUE;
+        int lastEnd = (int)(firstRaw >>> 32);
+
+        for (int i = 1; i < n; i++) {
+            long origRaw = a[i] ^ Long.MIN_VALUE;
+            int start = (int)(origRaw & 0xFFFFFFFFL);
+            int end   = (int)(origRaw >>> 32);
+            if (start > lastEnd) {
+                arrows++;
+                lastEnd = end;
+            }
+        }
+        return arrows;
+    }
+}
+
+/*class Solution {
+    public int findMinArrowShots(int[][] segments) {
+        Arrays.sort(segments, (a, b) -> Integer.compare(a[1], b[1]));
+        int ans = 0, arrow = 0;
+        for (int i = 0; i < segments.length; i ++) {
+            if (ans == 0 || segments[i][0] > arrow) {
+                ans ++;
+                arrow = segments[i][1];
+            }
+        }
+        return ans;
+    }
+}*/
