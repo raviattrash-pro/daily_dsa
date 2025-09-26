@@ -1,0 +1,27 @@
+import java.util.Arrays;
+
+class Solution {
+    public int triangleNumber(int[] nums) {
+        Arrays.sort(nums);  // Step 1: sort array
+        int n = nums.length;
+        int count = 0;
+
+        // Step 2: fix the largest side one by one
+        for (int k = n - 1; k >= 2; k--) {
+            int i = 0, j = k - 1;
+            
+            // Step 3: two-pointer check
+            while (i < j) {
+                if (nums[i] + nums[j] > nums[k]) {
+                    // all pairs (i..j-1, j) form valid triangles
+                    count += (j - i);
+                    j--; 
+                } else {
+                    i++;
+                }
+            }
+        }
+
+        return count;
+    }
+}
