@@ -1,0 +1,12 @@
+class Solution {
+    public boolean canConstruct(String ransomNote, String magazine) {
+        if(magazine.length() < ransomNote.length()) return false;
+        int[] count = new int[26];
+        for(char ransomNoteChar : ransomNote.toCharArray()) {
+            int index = magazine.indexOf(ransomNoteChar, count[ransomNoteChar - 'a']);
+            if(index == -1) return false;
+            count[ransomNoteChar - 'a'] = index + 1;
+        }
+        return true;
+    }
+}

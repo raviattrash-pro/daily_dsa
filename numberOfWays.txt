@@ -1,0 +1,67 @@
+public class Solution {
+    static final int MOD = 1_000_000_007;
+    int[][] memo;
+    int maxBase;
+    int x;
+
+    public int numberOfWays(int n, int x) {
+        this.x = x;
+
+        // compute maxBase using integer power to avoid floating rounding issues
+        maxBase = 0;
+        for (int i = 1; ; i++) {
+            long p = pow(i, x);
+            if (p > n) break;
+            maxBase = i;
+        }
+
+        // memo dimensions: current from 1..maxBase, remaining 0..n
+        memo = new int[maxBase + 2][n + 1];
+        for (int i = 0; i <= maxBase + 1; i++) {
+            for (int j = 0; j <= n; j++) memo[i][j] = -1;
+        }
+
+        return dfs(1, n);
+    }
+
+    private int dfs(int cur, int rem) {
+        if (rem == 0) return 1;
+        if (rem < 0 || cur > maxBase) return 0;
+        if (memo[cur][rem] != -1) return memo[cur][rem];
+
+        int add = 0;
+        long p = pow(cur, x);
+        if (p <= rem) {
+            add = dfs(cur + 1, rem - (int)p);
+        }
+        int skip = dfs(cur + 1, rem);
+
+        memo[cur][rem] = (int)(((long)add + skip) % MOD);
+        return memo[cur][rem];
+    }
+
+    // integer power: a^e computed with long to avoid overflow during intermediate steps
+    private long pow(int a, int e) {
+        long res = 1L;
+        for (int i = 0; i < e; i++) {
+            res *= a;
+        }
+        return res;
+    }
+}
+
+
+class Solution {
+    public int numberOfWays(int n, int x) {
+        long[] dp = new long[n+1];
+        dp[0] = 1;
+        for (int i = 1; Math.pow(i,x) <= n; i++) {
+            int num = (int)Math.pow(i,x);
+            for (int s = n; s >= num; s--) {
+                dp[s] += dp[s - num];
+            }
+        }
+        return (int) (dp[n] % 1_000_000_007);
+        
+    }
+}

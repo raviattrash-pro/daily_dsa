@@ -1,0 +1,97 @@
+class LRUCache {
+    private final int capacity;
+    private final Node mruHead;
+    private final Node mruTail;
+    private final Node keyMap[];
+    private int numberOfKeys;
+
+    private class Node {
+        int key;
+        int value;
+        Node previous;
+        Node next;
+
+        public Node(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+
+        this.mruHead = new Node(-1, -1);
+        this.mruTail = new Node(-1, -1);
+
+        this.mruHead.previous = null;
+        this.mruHead.next = mruTail;
+
+        this.mruTail.previous = mruHead;
+        this.mruTail.next = null;
+
+        this.keyMap = new Node[10001];
+        this.numberOfKeys = 0;
+    }
+    
+    public int get(int key) {
+        final Node node = this.keyMap[key];
+
+        if (node == null) {
+            return -1;
+        }
+
+        removeNode(node);
+        promoteToHead(node);
+
+        return node.value;
+    }
+    
+    public void put(int key, int value) {
+        final Node node = this.keyMap[key];
+
+        if (node != null) {
+            node.value = value;
+            removeNode(node);
+            promoteToHead(node);
+        } else {
+            if (this.numberOfKeys >= this.capacity) {
+                evictLru();
+            }
+
+            final Node newNode = new Node(key, value);
+            promoteToHead(newNode);
+            this.keyMap[key] = newNode;
+            this.numberOfKeys++;
+        }
+    }
+
+    private void removeNode(final Node node) {
+        // Remove node
+        node.previous.next = node.next;
+        node.next.previous = node.previous;
+    }
+
+    private void promoteToHead(final Node node) {
+        // Insert node to the head of the list
+        node.previous = this.mruHead;
+        node.next = this.mruHead.next;
+
+        this.mruHead.next.previous = node;
+        this.mruHead.next = node;
+    }
+
+    private void evictLru() {
+        final Node nodeToEvict = this.mruTail.previous;
+        removeNode(nodeToEvict);
+
+        this.keyMap[nodeToEvict.key] = null;
+        this.numberOfKeys--;
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */

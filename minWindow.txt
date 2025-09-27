@@ -1,0 +1,41 @@
+class Solution {
+    public String minWindow(String s, String t) {
+        int[] track = new int[256];
+        char[] str = s.toCharArray();
+        char[] match = t.toCharArray();
+        int n = str.length;
+        int m = match.length;
+        int l = 0;
+        int r = 0;
+        int maxLen = n+1;
+        int start = 0;
+        int cnt = 0;
+        for(char c : match){
+            track[c]++;
+        }
+        while(r < n){
+            if(track[str[r]] > 0){
+                cnt++;
+            }
+            track[str[r]]--;
+            r++;
+            if(cnt >= m){
+                while(l<n && cnt >= m){
+                    track[str[l]]++;
+                    if(track[str[l]] > 0){
+                        cnt--;
+                    }
+                    l++;
+                }
+                if(r-l+1 < maxLen){
+                    maxLen = r-l+1;
+                    start = l-1;
+                }
+            }
+        }
+        if(maxLen == n+1){
+            return "";
+        }
+        return s.substring(start, start+maxLen);
+    }
+}

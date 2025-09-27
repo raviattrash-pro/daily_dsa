@@ -1,0 +1,16 @@
+Interview 
+-> Rest controller
+-> Get and post 
+-> can we fetch data using post
+-> How Get will work when we hit the get request 
+-> singledon pattern
+-> code -> array to find nth highest
+-> code -> rotary array -> some time find array -> seach a given number in the array 
+-> time complextity of every thing
+-> space complexity 
+->  Arrays.sort how works -> time compexity
+-> Design pattern
+-> how flow of data in springboot
+-> DTO
+
+https://chatgpt.com/share/687265e0-db70-8006-afae-8e8a8378c98a

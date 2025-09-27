@@ -1,0 +1,21 @@
+class Solution {
+    public int[] getNoZeroIntegers(int n) {
+        int a = 1;
+        int b = n - a;
+        
+        while (!isNoZero(a) || !isNoZero(b)) {
+            a++;
+            b = n - a;
+        }
+        
+        return new int[]{a, b};
+    }
+
+    private boolean isNoZero(int num) {
+        while (num > 0) {
+            if (num % 10 == 0) return false;
+            num /= 10;
+        }
+        return true;
+    }
+}

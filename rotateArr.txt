@@ -1,0 +1,82 @@
+class Solution {
+    public void rotate(int[] nums, int k) {
+        int size = nums.length;
+        int [] temp = new int [size];
+        int index=0;
+
+        // Handle case where k > size (only need remainder)
+        while(k>size){
+            k=k-size;
+        }
+
+        // Copy the last k elements into temp
+        for(int i=size-k;i<size;i++){
+            temp[index] = nums[i];
+            index++;
+        }
+
+        // Copy the first (size-k) elements into temp
+        for(int i=0;i<size-k;i++){
+            temp[index] = nums[i];
+            index++;
+        }
+
+        // Copy everything back into nums
+        int n=0;
+        for(int i=0;i<size;i++){
+            nums[i] = temp[n];
+            n++;
+        }
+    }
+}
+
+
+
+class Solution {
+    public void rotate(int[] nums, int k) {
+        int n = nums.length;
+        k = k % n; // handle case when k > n
+
+        // Step 1: reverse the entire array
+        reverse(nums, 0, n - 1);
+
+        // Step 2: reverse the first k elements
+        reverse(nums, 0, k - 1);
+
+        // Step 3: reverse the rest
+        reverse(nums, k, n - 1);
+    }
+
+    private void reverse(int[] nums, int left, int right) {
+        while (left < right) {
+            int temp = nums[left];
+            nums[left] = nums[right];
+            nums[right] = temp;
+            left++;
+            right--;
+        }
+    }
+}
+
+
+class Solution {
+    public void rotate(int[] nums, int k) {
+        int n = nums.length;
+        k = k % n; // Handle case where k > n
+        int count = 0; // Track how many numbers have been moved
+
+        for (int start = 0; count < n; start++) {
+            int current = start;
+            int prev = nums[start];
+
+            do {
+                int next = (current + k) % n; // New position
+                int temp = nums[next];
+                nums[next] = prev;
+                prev = temp;
+                current = next;
+                count++;
+            } while (start != current); // Continue until cycle is closed
+        }
+    }
+}
