@@ -1,7 +1,0 @@
-Focus on this weekend  
-
-merger sort
-Search in Rotated Sorted Array
-binary search
-linked List
-Minimimum sum differnece
