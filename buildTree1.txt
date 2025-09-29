@@ -1,0 +1,26 @@
+class Solution {
+    int postindex;
+    int inindex;
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        postindex = postorder.length -1;
+        inindex = inorder.length-1;
+
+        return helper(inorder, postorder,Integer.MIN_VALUE);
+        }
+        
+    
+     public TreeNode helper(int[] inorder, int[] postorder, int stop){
+        if(postindex<0) return null;
+        if(inorder[inindex]==stop){
+            inindex--;
+            return null;
+        }
+     
+     TreeNode root = new TreeNode(postorder[postindex--]);
+
+     //build right tree and then left
+     root.right = helper(inorder, postorder, root.val);
+     root.left = helper(inorder, postorder, stop);
+     return root;
+     }
+} 
