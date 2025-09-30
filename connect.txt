@@ -1,0 +1,28 @@
+class Solution {
+    public Node connect(Node root) {
+        if (root == null) return null;
+        
+        Node current = root;  // start with root
+        
+        while (current != null) {
+            Node dummy = new Node(0); // dummy node to track start of next level
+            Node tail = dummy;        // tail builds the next level chain
+            
+            while (current != null) {
+                if (current.left != null) {
+                    tail.next = current.left;
+                    tail = tail.next;
+                }
+                if (current.right != null) {
+                    tail.next = current.right;
+                    tail = tail.next;
+                }
+                current = current.next; // move across current level
+            }
+            
+            current = dummy.next; // move down to next level
+        }
+        
+        return root;
+    }
+}
