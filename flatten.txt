@@ -1,0 +1,18 @@
+class Solution {
+    private TreeNode prev = null;
+
+    public void flatten(TreeNode root) {
+        if (root == null) return;
+
+        // Process right first, then left
+        flatten(root.right);
+        flatten(root.left);
+
+        // Link current node
+        root.right = prev;
+        root.left = null;
+
+        // Move prev pointer
+        prev = root;
+    }
+}
