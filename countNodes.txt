@@ -1,0 +1,24 @@
+class Solution {
+    public int countNodes(TreeNode root) {
+        if(root == null) return 0;
+        int left = findLeftHeight(root);
+        int right = findRightHeight(root);
+
+        if(left == right){
+            return (int)Math.pow(2, left) -1;
+        }else{
+            return 1 + countNodes(root.left) + countNodes(root.right);
+        }
+    }
+
+    public int findLeftHeight(TreeNode root){
+        if(root == null) return 0;
+        return 1 + findLeftHeight(root.left);
+    }
+
+
+    public int findRightHeight(TreeNode root){
+        if(root == null) return 0;
+        return 1 + findRightHeight(root.right);
+    }
+}
