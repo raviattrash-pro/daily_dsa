@@ -1,0 +1,70 @@
+class Solution {
+    static final int MOD = 1_000_000_007;
+
+    public int magicalSum(int m, int k, int[] nums) {
+        int n = nums.length;
+        // Precompute combinations C[n][k] up to m
+        long[][] C = new long[m + 1][m + 1];
+        for (int i = 0; i <= m; i++) {
+            C[i][0] = C[i][i] = 1;
+            for (int j = 1; j < i; j++) {
+                C[i][j] = (C[i-1][j-1] + C[i-1][j]) % MOD;
+            }
+        }
+
+        // Precompute powNums[pos][c] = nums[pos]^c % MOD for c=0..m
+        long[][] powNums = new long[n][m + 1];
+        for (int i = 0; i < n; i++) {
+            powNums[i][0] = 1;
+            long base = ((nums[i] % MOD) + MOD) % MOD;
+            for (int c = 1; c <= m; c++) {
+                powNums[i][c] = (powNums[i][c-1] * base) % MOD;
+            }
+        }
+
+        // dp[r][carry][bits] : remaining picks r, current carry, bits counted so far
+        // We'll store as dp[r][carry][bits] => use 3D arrays
+        // Dimensions: r:0..m, carry:0..m, bits:0..k
+        int maxCarry = m;
+        int maxBits = k;
+        long[][][] dp = new long[m + 1][maxCarry + 1][maxBits + 1];
+        dp[m][0][0] = 1; // start with all m picks remaining, carry 0, bits 0
+
+        for (int pos = 0; pos < n; pos++) {
+            long[][][] newDp = new long[m + 1][maxCarry + 1][maxBits + 1];
+            for (int r = 0; r <= m; r++) {
+                for (int carry = 0; carry <= maxCarry; carry++) {
+                    for (int bits = 0; bits <= maxBits; bits++) {
+                        long cur = dp[r][carry][bits];
+                        if (cur == 0) continue;
+                        // choose c picks at this index (0..r)
+                        for (int c = 0; c <= r; c++) {
+                            long ways = C[r][c];
+                            long val = (ways * powNums[pos][c]) % MOD;
+                            int newCarry = (carry + c) >> 1;
+                            if (newCarry > maxCarry) continue; // safe-check
+                            int addBit = ((carry + c) & 1);
+                            int newBits = bits + addBit;
+                            if (newBits > maxBits) continue;
+                            newDp[r - c][newCarry][newBits] = (newDp[r - c][newCarry][newBits] + cur * val) % MOD;
+                        }
+                    }
+                }
+            }
+            dp = newDp;
+        }
+
+        // After processing all indices, remaining picks must be 0.
+        long ans = 0;
+        for (int carry = 0; carry <= maxCarry; carry++) {
+            int carryPop = Integer.bitCount(carry);
+            for (int bits = 0; bits <= maxBits; bits++) {
+                if (bits + carryPop == k) {
+                    ans = (ans + dp[0][carry][bits]) % MOD;
+                }
+            }
+        }
+
+        return (int) ans;
+    }
+}
