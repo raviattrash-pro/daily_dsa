@@ -1,0 +1,29 @@
+
+
+class Solution {
+    
+    public void dfs(Node node, Node copy, Node[] visited) {
+        visited[node.val] = copy;
+
+        for (Node neighbor: node.neighbors) {
+            if (visited[neighbor.val] == null) {
+                Node newNode = new Node(neighbor.val);
+                copy.neighbors.add(newNode);
+                dfs(neighbor, newNode, visited);
+            } else {
+                copy.neighbors.add(visited[neighbor.val]);
+            }
+        }
+    }
+
+    public Node cloneGraph(Node node) {
+        if (node == null) {
+            return null;
+        }
+
+        Node[] visited = new Node[101];
+        Node copy = new Node(node.val);
+        dfs(node, copy, visited);
+        return copy;
+    }
+}
