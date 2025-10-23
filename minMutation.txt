@@ -1,0 +1,38 @@
+class Solution {
+    public int minMutation(String startGene, String endGene, String[] bank) {
+        Deque<String> queue = new ArrayDeque<>();
+        Map<String, Integer> numMutationsByVisitedMut = new HashMap<>();
+        queue.addLast(startGene);
+        numMutationsByVisitedMut.put(startGene, 0);
+
+        while (!queue.isEmpty()) {
+            String currGene = queue.removeFirst();
+            int numMutations = numMutationsByVisitedMut.get(currGene);
+            if (currGene.equals(endGene)) {
+                return numMutations;
+            }
+            ++numMutations;
+            char[] currGeneChars = currGene.toCharArray();
+            for (String mutInBank : bank) {
+                if (numMutationsByVisitedMut.containsKey(mutInBank)) {
+                    continue;
+                }
+                int numDiffChars = 0;
+                char[] mutInBankChars = mutInBank.toCharArray();
+                for (int i = 0; i < mutInBankChars.length; i++) {
+                    if (currGeneChars[i] != mutInBankChars[i]) {
+                        ++numDiffChars;
+                        if (numDiffChars > 1) {
+                            break;
+                        }
+                    }
+                }
+                if (numDiffChars == 1) {
+                    queue.addLast(mutInBank);
+                    numMutationsByVisitedMut.put(mutInBank, numMutations);
+                }
+            }
+        }
+        return -1;
+    }
+}
