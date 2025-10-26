@@ -1,0 +1,53 @@
+class WordDictionary {
+    
+    // Trie Node definition
+    private static class TrieNode {
+        TrieNode[] children = new TrieNode[26];
+        boolean isEndOfWord = false;
+    }
+    
+    private TrieNode root;
+
+    public WordDictionary() {
+        root = new TrieNode();
+    }
+    
+    // Adds a word into the Trie
+    public void addWord(String word) {
+        TrieNode node = root;
+        for (char ch : word.toCharArray()) {
+            int idx = ch - 'a';
+            if (node.children[idx] == null)
+                node.children[idx] = new TrieNode();
+            node = node.children[idx];
+        }
+        node.isEndOfWord = true;
+    }
+    
+    // Searches a word with '.' support
+    public boolean search(String word) {
+        return dfsSearch(word, 0, root);
+    }
+    
+    private boolean dfsSearch(String word, int index, TrieNode node) {
+        if (node == null)
+            return false;
+        
+        if (index == word.length())
+            return node.isEndOfWord;
+        
+        char ch = word.charAt(index);
+        
+        if (ch == '.') {
+            // Try all possible children when encountering '.'
+            for (TrieNode child : node.children) {
+                if (child != null && dfsSearch(word, index + 1, child))
+                    return true;
+            }
+            return false;
+        } else {
+            // Regular letter search
+            return dfsSearch(word, index + 1, node.children[ch - 'a']);
+        }
+    }
+}
