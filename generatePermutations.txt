@@ -1,0 +1,27 @@
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> permutations=new ArrayList<>();
+        generatePermutations(nums,permutations,0);
+        return permutations;
+    }
+    private void generatePermutations(int nums[],List<List<Integer>> permutations,int start){
+        if(start==nums.length){
+            List<Integer> permutation=new ArrayList<>();
+            for(int num:nums){
+                permutation.add(num);
+            }
+            permutations.add(permutation);
+            return;
+        }
+        for(int i=start;i<nums.length;i++){
+            swap(nums,i,start);
+            generatePermutations(nums,permutations,start+1);
+            swap(nums,i,start);
+        }
+    }
+    private void swap(int nums[],int i,int j){
+        int temp=nums[i];
+        nums[i]=nums[j];
+        nums[j]=temp;
+    }
+}
