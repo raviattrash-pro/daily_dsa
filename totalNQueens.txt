@@ -1,0 +1,17 @@
+class Solution {
+    public int totalNQueens(int n) {
+        return dfs(n, 0, 0, 0);
+    }
+    int dfs(int n, int cols, int d1, int d2) {
+        int full = (1 << n) - 1;
+        if (cols == full) return 1;
+        int avail = full & ~(cols | d1 | d2);
+        int count = 0;
+        while (avail != 0) {
+            int p = avail & -avail;
+            avail -= p;
+            count += dfs(n, cols | p, (d1 | p) << 1, (d2 | p) >> 1);
+        }
+        return count;
+    }
+}
