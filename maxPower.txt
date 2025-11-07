@@ -1,0 +1,39 @@
+class Solution {
+    private int len, r;
+    public long maxPower(int[] stations, int r, int k) {
+        this.len = stations.length;
+        this.r = r;
+        long[] prefixSum = new long[len + 1];
+        long[] powers = new long[len];
+        for (int i = 0; i < len; ++i) {
+            prefixSum[i + 1] = prefixSum[i] + stations[i];
+        }
+        for (int i = 0; i < len; ++i) {
+            int left = Math.max(0, i - r);
+            int right = Math.min(len - 1, i + r);
+            powers[i] = prefixSum[right + 1] - prefixSum[left];
+        }
+        long start = 0L, end = prefixSum[len] + k;
+        while (start < end - 1) {
+            long mid = start + (end - start) / 2;
+            if (isReachable(mid, k, powers)) start = mid;
+            else end = mid - 1;
+        }
+        return isReachable(end, k, powers) ? end : start;
+    }
+    private boolean isReachable(long required, int extra, long[] powers) {
+        long[] diff = new long[len + 1];
+        long powerDiff = 0L;
+        for (int i = 0; i < len; ++i) {
+            powerDiff += diff[i];
+            long needed = required - (powers[i] + powerDiff);
+            if (needed > 0) {
+                extra -= needed;
+                if (extra < 0) return false;
+                powerDiff += needed;
+                if (i + 2 * r + 1 < len) diff[i + 2 * r + 1] -= needed;
+            }
+        }
+        return true;
+    }
+}
