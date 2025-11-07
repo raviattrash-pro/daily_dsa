@@ -1,0 +1,25 @@
+class Solution {
+    static void solve(int open, int close, StringBuilder op, List<String> res) {
+        if (open == 0 && close == 0) {
+            res.add(op.toString());
+            return;
+        }
+        
+        if (open > 0) {
+            op.append('(');
+            solve(open - 1, close, op, res);
+            op.deleteCharAt(op.length() - 1);  
+        }
+        if (close > open) {
+            op.append(')');
+            solve(open, close - 1, op, res);
+            op.deleteCharAt(op.length() - 1);  
+        }
+    }
+
+    public List<String> generateParenthesis(int n) {
+        List<String> res = new ArrayList<>();
+        solve(n, n, new StringBuilder(), res);
+        return res;
+    }
+}
