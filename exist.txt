@@ -1,0 +1,58 @@
+class Solution {
+    public boolean exist(char[][] board, String word) {
+        int m = board.length;
+        int n = board[0].length;
+        // Quick frequency pruning
+        int[] freq = new int[58]; // covers 'A'..'z'
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j)
+                freq[board[i][j] - 'A']++;
+        int[] need = new int[58];
+        for (char c : word.toCharArray())
+            need[c - 'A']++;
+        for (int k = 0; k < need.length; ++k) {
+            if (need[k] > freq[k]) return false;
+        }
+
+        // Optional heuristic: reverse the word if the last char is rarer than the first
+        // to reduce branching on some adversarial test cases.
+        if (word.length() > 1) {
+            char first = word.charAt(0);
+            char last = word.charAt(word.length() - 1);
+            if (freq[last - 'A'] < freq[first - 'A']) {
+                word = new StringBuilder(word).reverse().toString();
+            }
+        }
+
+        char[] w = word.toCharArray();
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (board[i][j] == w[0]) {
+                    if (dfs(board, i, j, w, 0)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean dfs(char[][] board, int i, int j, char[] w, int idx) {
+        if (idx == w.length) return true;
+        int m = board.length, n = board[0].length;
+        if (i < 0 || i >= m || j < 0 || j >= n) return false;
+        if (board[i][j] != w[idx]) return false;
+
+        // mark visited
+        char tmp = board[i][j];
+        board[i][j] = '#';
+
+        // explore 4 directions
+        boolean found = dfs(board, i + 1, j, w, idx + 1)
+                     || dfs(board, i - 1, j, w, idx + 1)
+                     || dfs(board, i, j + 1, w, idx + 1)
+                     || dfs(board, i, j - 1, w, idx + 1);
+
+        // restore
+        board[i][j] = tmp;
+        return found;
+    }
+}
