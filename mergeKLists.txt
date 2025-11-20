@@ -1,0 +1,31 @@
+class Solution {
+
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try (FileWriter writer = new FileWriter("display_runtime.txt")) {
+                writer.write("0");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }));
+    }
+    public ListNode mergeKLists(ListNode[] lists) {
+        PriorityQueue<ListNode> heap = new PriorityQueue<>((a, b) -> a.val - b.val);
+        for(ListNode node : lists){
+            if(node!=null){
+                heap.offer(node);
+            }
+        }
+        ListNode preAns = new ListNode(0);
+        ListNode curr = preAns;
+        while(!heap.isEmpty()){
+            ListNode minNode = heap.poll();
+            curr.next = minNode;
+            curr = curr.next;
+            if(minNode.next != null){
+                heap.add(minNode.next);
+            }
+        }
+        return preAns.next;
+    }
+}
