@@ -1,0 +1,45 @@
+import java.util.*;
+
+class Solution {
+    public List<String> validateCoupons(String[] code, String[] businessLine, boolean[] isActive) {
+        
+        // Define business line priority
+        Map<String, Integer> priority = new HashMap<>();
+        priority.put("electronics", 0);
+        priority.put("grocery", 1);
+        priority.put("pharmacy", 2);
+        priority.put("restaurant", 3);
+        
+        List<String[]> validCoupons = new ArrayList<>();
+        
+        for (int i = 0; i < code.length; i++) {
+            // Check active
+            if (!isActive[i]) continue;
+            
+            // Check valid business line
+            if (!priority.containsKey(businessLine[i])) continue;
+            
+            // Check valid code
+            if (code[i] == null || code[i].isEmpty()) continue;
+            if (!code[i].matches("[A-Za-z0-9_]+")) continue;
+            
+            validCoupons.add(new String[]{businessLine[i], code[i]});
+        }
+        
+        // Sort by business line priority, then by code
+        Collections.sort(validCoupons, (a, b) -> {
+            int p1 = priority.get(a[0]);
+            int p2 = priority.get(b[0]);
+            if (p1 != p2) return p1 - p2;
+            return a[1].compareTo(b[1]);
+        });
+        
+        // Extract only codes
+        List<String> result = new ArrayList<>();
+        for (String[] coupon : validCoupons) {
+            result.add(coupon[1]);
+        }
+        
+        return result;
+    }
+}
